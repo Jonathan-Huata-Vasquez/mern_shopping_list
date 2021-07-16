@@ -1,5 +1,6 @@
 import {
   GET_ITEMS,
+  GET_CATEGORIES,
   ADD_ITEM,
   DELETE_ITEM,
   ITEMS_LOADING
@@ -8,6 +9,7 @@ import { IAction, IItem } from '../../types/interfaces';
 
 const initialState = {
   items: [],
+  categories:[],
   loading: false
 };
 
@@ -38,6 +40,11 @@ export default function(state: IState = initialState, action: IAction) {
         ...state,
         loading: true
       };
+    case GET_CATEGORIES:
+        return {
+          ...state,
+          categories: action.payload
+        };
     default:
       return state;
   }

@@ -7,33 +7,36 @@ import {
   Form,
   FormGroup,
   Label,
-  Input
+  Input,
+  CustomInput
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { addItem } from '../flux/actions/itemActions';
 import { IItemReduxProps, IItemModal, ITarget } from '../types/interfaces';
 
-const ItemModal = ({ isAuthenticated, addItem }: IItemModal) => {
+const ItemModal = ({ isAuthenticated, addItem,item }: IItemModal) => {
   const [modal, setModal] = useState(false);
   const [name, setName] = useState('');
-
+  const [category, setCategory] = useState('');
   const handleToggle = () => setModal(!modal);
 
   const handleChangeName = (e: ITarget) => setName(e.target.value);
+  const handleChangeCategory = (e: ITarget) => setCategory(e.target.value);
 
   const handleOnSubmit = (e: any) => {
     e.preventDefault();
 
     const newItem = {
-      name
+      name,
+      category
     };
-
     // Add item via addItem action
     addItem(newItem);
     // Close modal
     handleToggle();
   };
 
+  const {categories} = item;
   return (
     <div>
       {isAuthenticated ? (
@@ -61,6 +64,15 @@ const ItemModal = ({ isAuthenticated, addItem }: IItemModal) => {
                 placeholder="Add shopping item"
                 onChange={handleChangeName}
               />
+              <Label for="exampleCustomSelect">Custom Select</Label>
+              <CustomInput type="select" id="exampleCustomSelect" name="customSelect" onChange ={(e)=>handleChangeCategory(e)} value={category}>
+              <option value="" disabled>CHOOSE ONE</option>
+                {categories.map(aCategory => (
+                  <option value={aCategory.name} key = {aCategory._id}>{aCategory.name}</option>
+                ))}
+                
+                
+              </CustomInput>
               <Button color="dark" style={{ marginTop: '2rem' }} block>
                 Add Item
               </Button>
@@ -72,9 +84,12 @@ const ItemModal = ({ isAuthenticated, addItem }: IItemModal) => {
   );
 };
 
-const mapStateToProps = (state: IItemReduxProps) => ({
-  item: state.item,
-  isAuthenticated: state.auth.isAuthenticated
-});
+const mapStateToProps = (state: IItemReduxProps) => {
+  
+  return {
+    item: state.item,
+    isAuthenticated: state.auth.isAuthenticated
+  };
+}
 
 export default connect(mapStateToProps, { addItem })(ItemModal);

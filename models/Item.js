@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model,Types } from 'mongoose';
 
 // Create Schema
 const ItemSchema = new Schema({
@@ -9,7 +9,11 @@ const ItemSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
-  }
+  },
+  category: {
+    type: Types.ObjectId, 
+    ref: 'category',
+    required :true}
 });
 
 const Item = model('item', ItemSchema);

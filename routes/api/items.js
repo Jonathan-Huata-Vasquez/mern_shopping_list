@@ -2,9 +2,9 @@ import { Router } from 'express';
 import auth from '../../middleware/auth';
 // Item Model
 import Item from '../../models/Item';
+import Category from '../../models/Category';
 
 const router = Router();
-
 /**
  * @route   GET api/items
  * @desc    Get All Items
@@ -13,9 +13,9 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const items = await Item.find();
+    const items = await Item.find().populate("category");
     if (!items) throw Error('No items');
-
+    
     res.status(200).json(items);
   } catch (e) {
     res.status(400).json({ msg: e.message });
@@ -26,16 +26,22 @@ router.get('/', async (req, res) => {
  * @route   POST api/items
  * @desc    Create An Item
  * @access  Private
- */
+**/
 
 router.post('/', auth, async (req, res) => {
-  const newItem = new Item({
-    name: req.body.name
-  });
-
   try {
-    const item = await newItem.save();
+    let category = await Category.findOne({name:req.body.category})
+    if (!category) throw Error('Something went wrong with the category of the item');
+    
+    const newItem = new Item({
+      name: req.body.name,
+      category: category._id
+    });
+
+    let item = await newItem.save();
+    item = await item.populate("category").execPopulate();
     if (!item) throw Error('Something went wrong saving the item');
+
 
     res.status(200).json(item);
   } catch (e) {
@@ -47,7 +53,7 @@ router.post('/', auth, async (req, res) => {
  * @route   DELETE api/items/:id
  * @desc    Delete A Item
  * @access  Private
- */
+**/
 
 router.delete('/:id', auth, async (req, res) => {
   try {

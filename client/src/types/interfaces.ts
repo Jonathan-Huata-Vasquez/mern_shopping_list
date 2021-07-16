@@ -62,33 +62,49 @@ export interface IAppNavbar {
   };
 }
 
+// CATEGORIES
+export interface IExistingCategory {
+  _id: string;
+  name: string;
+}
+
 // ITEMS
 export interface IExistingItem {
   _id: string;
   name: string;
+  category: any;
 }
 
 export interface IItem {
   _id?: string;
   name: string;
+  category:any;
 }
 
 export interface IItemModal {
   isAuthenticated: boolean;
   addItem(item: IItem): void;
+  item: {
+    categories:IExistingCategory[];
+  };
 }
 
 export interface IItemReduxProps extends IAuthReduxProps {
   item: {
     items: IExistingItem[];
+    categories:IExistingCategory[];
   };
+  
 }
 
 export interface IShoppingList {
   item: {
     items: IExistingItem[];
+    categories:IExistingCategory[];
   };
-  getItems(): void;
+  
+  getItems():void;
+  getCategories():void;
   deleteItem(id: string): void;
   isAuthenticated: boolean;
 }
