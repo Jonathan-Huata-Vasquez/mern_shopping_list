@@ -25,7 +25,7 @@ const ItemModal = ({ isAuthenticated, addItem,item }: IItemModal) => {
 
   const handleOnSubmit = (e: any) => {
     e.preventDefault();
-
+    if(name === "" || category ==="") return alert("the item must have a name and a category")
     const newItem = {
       name,
       category
@@ -34,6 +34,7 @@ const ItemModal = ({ isAuthenticated, addItem,item }: IItemModal) => {
     addItem(newItem);
     // Close modal
     handleToggle();
+    setCategory("");
   };
 
   const {categories} = item;
